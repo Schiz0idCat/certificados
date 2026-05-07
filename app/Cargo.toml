@@ -1,0 +1,10 @@
+[package]
+name = "app"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+pdf = { path = "../pdf" }
+rut = { path = "../tools/rut" }
+templates = { path = "../templates" }
+time = { workspace = true }
