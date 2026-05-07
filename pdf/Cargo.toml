@@ -1,0 +1,10 @@
+[package]
+name = "pdf"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+askama = { workspace = true }
+headless_chrome = "1.0.21"
+thiserror = { workspace = true }
+urlencoding = "2.1.3"
