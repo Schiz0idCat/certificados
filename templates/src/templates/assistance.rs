@@ -7,7 +7,7 @@ use rut::Rut;
 use time::{Date, Time};
 
 #[derive(Template)]
-#[template(path = "assistance/assistance.html")]
+#[template(path = "assistance.html")]
 pub struct Assistance {
     name: String,
     birth: String,
