@@ -6,5 +6,5 @@ linker = "x86_64-w64-mingw32-gcc"
 rustflags = ["-C", "target-feature=+crt-static", "-C", "link-args=-static"]
 
 [alias]
-build-win = "build --release --target x86_64-pc-windows-gnu"
-build-lin = "build --release --target x86_64-unknown-linux-gnu"
+bwin = "build --release --target x86_64-pc-windows-gnu"
+blin = "build --release --target x86_64-unknown-linux-gnu"
