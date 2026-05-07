@@ -17,39 +17,39 @@ pub trait PdfGenerator: Template {
         let browser = Browser::new(opt).map_err(|_| BrowserError::OpenBrowser)?;
         let tab = browser.new_tab().map_err(|_| BrowserError::OpenTab)?;
 
-        let data_url = format!(
+        let url = format!(
             "data:text/html;charset=utf-8,{}",
             urlencoding::encode(&html)
         );
-        tab.navigate_to(&data_url)
+        tab.navigate_to(&url)
             .map_err(|_| BrowserError::TabNavigation)?;
         tab.wait_until_navigated()
             .map_err(|_| BrowserError::TabNavigation)?;
 
-        let pdf_data = tab.print_to_pdf(None).map_err(|_| BrowserError::Print)?;
+        let pdf = tab.print_to_pdf(None).map_err(|_| BrowserError::Print)?;
 
-        fs::write(path, pdf_data).map_err(|_| BrowserError::Io)?;
+        fs::write(path, pdf).map_err(|_| BrowserError::Io)?;
 
         Ok(())
     }
 }
 
 fn find_chrome_bin() -> Option<PathBuf> {
-    let names = [
+    let browsers = [
         "google-chrome",
         "chromium",
         "brave",
         "microsoft-edge",
         "opera",
     ];
-    let path_var = std::env::var_os("PATH")?;
+    let path = std::env::var_os("PATH")?;
 
-    for directory in std::env::split_paths(&path_var) {
-        for name in names {
-            let bin_path = directory.join(name);
+    for directory in std::env::split_paths(&path) {
+        for browser in browsers {
+            let browser_path = directory.join(browser);
 
-            if bin_path.exists() {
-                return Some(bin_path);
+            if browser_path.exists() {
+                return Some(browser_path);
             }
         }
     }
