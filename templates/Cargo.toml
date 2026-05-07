@@ -1,0 +1,12 @@
+[package]
+name = "templates"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+age = { path = "../tools/age" }
+askama = { workspace = true }
+pdf = { path = "../pdf" }
+rut = { path = "../tools/rut" }
+thiserror = { workspace = true }
+time = { workspace = true }
