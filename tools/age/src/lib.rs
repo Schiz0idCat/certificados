@@ -64,7 +64,25 @@ impl From<Date> for Age {
 
 impl std::fmt::Display for Age {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}-{}-{}", self.years, self.months, self.days)
+        let format_age = |value: u8, singular: &str, plural: &str| -> String {
+            match value {
+                0 => String::new(),
+                1 => format!("1 {}", singular),
+                _ => format!("{} {}", value, plural),
+            }
+        };
+
+        let years = format_age(self.years, "Año", "Años");
+        let months = format_age(self.months, "Mes", "Meses");
+        let days = format_age(self.days, "Día", "Días");
+
+        let parts: Vec<&str> = [years.as_str(), months.as_str(), days.as_str()]
+            .iter()
+            .filter(|s| !s.is_empty())
+            .copied()
+            .collect();
+
+        write!(f, "{}", parts.join(" "))
     }
 }
 
