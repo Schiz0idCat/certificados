@@ -163,6 +163,7 @@ dependencies = [
 name = "cfg"
 version = "0.1.0"
 dependencies = [
+ "rut",
  "time",
 ]
 
