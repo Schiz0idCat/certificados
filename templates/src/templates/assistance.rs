@@ -36,12 +36,13 @@ impl Assistance {
 
         let date_fmt = Cfg::global().date_fmt();
         let time_fmt = Cfg::global().time_fmt();
+        let rut_fmt = Cfg::global().rut_fmt();
 
         Ok(Self {
             name: name.to_string(),
             birth: birth.format(date_fmt)?,
             age: Age::between(birth, today).to_string(),
-            rut: rut.to_string(),
+            rut: rut.format(rut_fmt),
             today: today.format(date_fmt)?,
             appointment: appointment.format(date_fmt)?,
             start_time: start.format(time_fmt)?,
