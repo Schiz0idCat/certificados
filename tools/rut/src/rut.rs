@@ -120,7 +120,7 @@ impl std::str::FromStr for Rut {
 
 impl std::fmt::Display for Rut {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.format(DisplayOpt::new(true, true)))
+        write!(f, "{}", self.format(DisplayOpt::default()))
     }
 }
 

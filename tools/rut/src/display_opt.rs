@@ -1,3 +1,4 @@
+#[derive(Clone, Copy)]
 pub struct DisplayOpt {
     dots: bool,
     hyphen: bool,
@@ -14,5 +15,11 @@ impl DisplayOpt {
 
     pub fn hyphen(&self) -> bool {
         self.hyphen
+    }
+}
+
+impl Default for DisplayOpt {
+    fn default() -> Self {
+        Self::new(true, true)
     }
 }
