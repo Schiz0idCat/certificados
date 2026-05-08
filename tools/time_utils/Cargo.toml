@@ -1,0 +1,8 @@
+[package]
+name = "time_utils"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+thiserror = { workspace = true }
+time = { workspace = true }
