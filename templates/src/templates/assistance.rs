@@ -2,6 +2,7 @@ use crate::errors::AssistanceError;
 
 use age::Age;
 use askama::Template;
+use cfg::Cfg;
 use pdf::PdfGenerator;
 use rut::Rut;
 use time::{Date, Time};
@@ -33,15 +34,18 @@ impl Assistance {
             return Err(AssistanceError::Time);
         }
 
+        let date_fmt = Cfg::global().date_fmt();
+        let time_fmt = Cfg::global().time_fmt();
+
         Ok(Self {
             name: name.to_string(),
-            birth: birth.to_string(),
+            birth: birth.format(date_fmt)?,
             age: Age::between(birth, today).to_string(),
             rut: rut.to_string(),
-            today: today.to_string(),
-            appointment: appointment.to_string(),
-            start_time: start.to_string(),
-            end_time: end.to_string(),
+            today: today.format(date_fmt)?,
+            appointment: appointment.format(date_fmt)?,
+            start_time: start.format(time_fmt)?,
+            end_time: end.format(time_fmt)?,
         })
     }
 }

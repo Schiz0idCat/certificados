@@ -6,7 +6,8 @@ edition.workspace = true
 [dependencies]
 age = { path = "../tools/age" }
 askama = { workspace = true }
+cfg = { path = "../cfg" }
 pdf = { path = "../pdf" }
 rut = { path = "../tools/rut" }
 thiserror = { workspace = true }
-time = { workspace = true }
+time = { workspace = true, features = ["formatting"] }

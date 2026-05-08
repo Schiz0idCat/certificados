@@ -1,5 +1,5 @@
 [workspace]
-members = ["app", "pdf", "templates", "tools/age", "tools/rut"]
+members = ["app", "cfg", "pdf", "templates", "tools/age", "tools/rut"]
 resolver = "3"
 
 [workspace.package]
