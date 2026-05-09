@@ -35,7 +35,7 @@ impl eframe::App for Assistance {
             ui.vertical_centered(|ui| {
                 ui.set_max_width(505.0);
 
-                ui.add_space(6.0);
+                ui.add_space(10.0);
                 ui.heading("Generar Certificado de Asistencia");
                 ui.separator();
 
