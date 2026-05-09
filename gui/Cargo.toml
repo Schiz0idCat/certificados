@@ -4,6 +4,5 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-cfg = { path = "../cfg" }
 eframe = { workspace = true }
-time = { workspace = true }
+jiff = "0.2.24"
