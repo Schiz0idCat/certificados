@@ -30,46 +30,62 @@ impl Default for Assistance {
 
 impl eframe::App for Assistance {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
-        ui.heading("Generar Certificado de Asistencia.");
-        ui.add_space(10.0);
+        let ui_builder = egui::UiBuilder::new();
 
-        egui::Grid::new("assistance_grid")
-            .num_columns(2)
-            .spacing([10.0, 10.0])
-            .show(ui, |ui| {
-                ui.label("Nombre:");
-                ui.text_edit_singleline(&mut self.name);
-                ui.end_row();
-
-                ui.label("RUT:");
-                ui.text_edit_singleline(&mut self.rut);
-                ui.end_row();
-
-                ui.label("Fecha de Nacimiento:");
-                ui.text_edit_singleline(&mut self.birth);
-                ui.end_row();
-
-                ui.label("Fecha Informe:");
-                ui.text_edit_singleline(&mut self.today);
-                ui.end_row();
-
-                ui.label("Fecha Cita:");
-                ui.text_edit_singleline(&mut self.appointment);
-                ui.end_row();
-
-                ui.label("Hora Inicio:");
-                ui.text_edit_singleline(&mut self.start_time);
-                ui.end_row();
-
-                ui.label("Hora Fin:");
-                ui.text_edit_singleline(&mut self.end_time);
-                ui.end_row();
+        ui.scope_builder(ui_builder, |ui| {
+            ui.vertical_centered(|ui| {
+                ui.heading("Generar Certificado de Asistencia");
             });
 
-        ui.add_space(20.0);
+            ui.add_space(12.0);
+            ui.separator();
+            ui.add_space(12.0);
 
-        if ui.button("Generar").clicked() {
-            println!("placeholder")
-        }
+            egui::Grid::new("assistance_grid")
+                .num_columns(2)
+                .spacing([40.0, 12.0])
+                .striped(true)
+                .show(ui, |ui| {
+                    ui.label("Nombre:");
+                    ui.text_edit_singleline(&mut self.name);
+                    ui.end_row();
+
+                    ui.label("RUT:");
+                    ui.text_edit_singleline(&mut self.rut);
+                    ui.end_row();
+
+                    ui.label("Fecha de Nacimiento:");
+                    ui.text_edit_singleline(&mut self.birth);
+                    ui.end_row();
+
+                    ui.label("Fecha Informe:");
+                    ui.text_edit_singleline(&mut self.today);
+                    ui.end_row();
+
+                    ui.label("Fecha Cita:");
+                    ui.text_edit_singleline(&mut self.appointment);
+                    ui.end_row();
+
+                    ui.label("Hora Inicio:");
+                    ui.text_edit_singleline(&mut self.start_time);
+                    ui.end_row();
+
+                    ui.label("Hora Fin:");
+                    ui.text_edit_singleline(&mut self.end_time);
+                    ui.end_row();
+                });
+
+            ui.add_space(24.0);
+            ui.separator();
+            ui.add_space(12.0);
+
+            ui.vertical_centered(|ui| {
+                let button = ui.add_sized([120.0, 40.0], egui::Button::new("Generar PDF"));
+
+                if button.clicked() {
+                    println!("Certificado de asistencia para {}", self.name);
+                }
+            });
+        });
     }
 }

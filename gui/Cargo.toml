@@ -5,5 +5,5 @@ edition.workspace = true
 
 [dependencies]
 cfg = { path = "../cfg" }
-eframe = "0.34.2"
+eframe = { workspace = true }
 time = { workspace = true }
