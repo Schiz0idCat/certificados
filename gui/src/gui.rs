@@ -7,7 +7,9 @@ pub struct Gui;
 impl Gui {
     pub fn run() -> eframe::Result {
         let options = eframe::NativeOptions {
-            viewport: egui::ViewportBuilder::default().with_inner_size([400.0, 500.0]),
+            viewport: egui::ViewportBuilder::default()
+                .with_inner_size([570.0, 390.0])
+                .with_resizable(false),
             ..Default::default()
         };
 
@@ -17,8 +19,7 @@ impl Gui {
             Box::new(|cc| {
                 let mut visuals = egui::Visuals::dark();
 
-                visuals.widgets.inactive.bg_stroke =
-                    egui::Stroke::new(1.0, egui::Color32::from_gray(80));
+                visuals.extreme_bg_color = egui::Color32::from_gray(2);
 
                 cc.egui_ctx.set_visuals(visuals);
 
