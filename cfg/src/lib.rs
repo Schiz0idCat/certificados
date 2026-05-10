@@ -1,12 +1,10 @@
 use rut::DisplayOpt;
-use time::format_description::FormatItem;
-use time::macros::format_description;
 
 use std::sync::OnceLock;
 
 pub struct Cfg {
-    date_fmt: &'static [FormatItem<'static>],
-    time_fmt: &'static [FormatItem<'static>],
+    date_fmt: &'static str,
+    time_fmt: &'static str,
     rut_fmt: DisplayOpt,
 }
 
@@ -16,11 +14,11 @@ impl Cfg {
         INSTANCE.get_or_init(|| Cfg::default())
     }
 
-    pub fn date_fmt(&self) -> &'static [FormatItem<'static>] {
+    pub fn date_fmt(&self) -> &'static str {
         self.date_fmt
     }
 
-    pub fn time_fmt(&self) -> &'static [FormatItem<'static>] {
+    pub fn time_fmt(&self) -> &'static str {
         self.time_fmt
     }
 
@@ -32,8 +30,8 @@ impl Cfg {
 impl Default for Cfg {
     fn default() -> Self {
         Self {
-            date_fmt: format_description!("[day]-[month]-[year]"),
-            time_fmt: format_description!("[hour]:[minute]"),
+            date_fmt: "%d/%m/%Y",
+            time_fmt: "%H:%M",
             rut_fmt: DisplayOpt::default(),
         }
     }

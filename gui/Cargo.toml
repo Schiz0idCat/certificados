@@ -5,4 +5,4 @@ edition.workspace = true
 
 [dependencies]
 eframe = { workspace = true }
-jiff = "0.2.24"
+jiff = { workspace = true }

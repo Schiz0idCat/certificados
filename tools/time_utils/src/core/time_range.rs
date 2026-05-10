@@ -1,5 +1,5 @@
 use crate::errors::TimeRangeError;
-use time::Time;
+use jiff::civil::Time;
 
 pub struct TimeRange {
     start: Time,

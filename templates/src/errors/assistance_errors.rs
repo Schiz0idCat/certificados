@@ -6,5 +6,5 @@ pub enum AssistanceError {
     Browser(#[from] pdf::errors::BrowserError),
 
     #[error("time error: {0}")]
-    Format(#[from] time::error::Format),
+    Format(#[from] jiff::Error),
 }

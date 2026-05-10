@@ -5,4 +5,4 @@ edition.workspace = true
 
 [dependencies]
 thiserror = { workspace = true }
-time = { workspace = true }
+jiff = { workspace = true }

@@ -3,9 +3,10 @@ use crate::errors::AssistanceError;
 use age::Age;
 use askama::Template;
 use cfg::Cfg;
+use jiff::civil::Date;
+use jiff::fmt::strtime;
 use pdf::PdfGenerator;
 use rut::Rut;
-use time::Date;
 use time_utils::TimeRange;
 
 #[derive(Template)]
@@ -36,13 +37,13 @@ impl Assistance {
 
         Ok(Self {
             name: name.to_string(),
-            birth: birth.format(date_fmt)?,
+            birth: strtime::format(date_fmt, birth)?,
             age: Age::between(birth, today).to_string(),
             rut: rut.format(rut_fmt),
-            today: today.format(date_fmt)?,
-            appointment: appointment.format(date_fmt)?,
-            start_time: range.start().format(time_fmt)?,
-            end_time: range.end().format(time_fmt)?,
+            today: strtime::format(date_fmt, today)?,
+            appointment: strtime::format(date_fmt, appointment)?,
+            start_time: strtime::format(time_fmt, range.start())?,
+            end_time: strtime::format(time_fmt, range.end())?,
         })
     }
 }

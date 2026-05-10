@@ -1,5 +1,5 @@
+use jiff::civil::Time;
 use thiserror::Error;
-use time::Time;
 
 #[derive(Debug, Error)]
 pub enum TimeRangeError {

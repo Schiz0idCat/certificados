@@ -1,4 +1,6 @@
-use time::{Date, OffsetDateTime};
+use jiff::Unit;
+use jiff::Zoned;
+use jiff::civil::Date;
 
 pub struct Age {
     years: u8,
@@ -28,37 +30,19 @@ impl Age {
             };
         }
 
-        let mut years = target.year() - birth.year();
-        let mut months = target.month() as i8 - birth.month() as i8;
-        let mut days = target.day() as i8 - birth.day() as i8;
-
-        if days < 0 {
-            months -= 1;
-            let prev_month_date = target
-                .replace_day(1)
-                .ok()
-                .and_then(|d| d.previous_day())
-                .unwrap_or(target);
-            days +=
-                time::util::days_in_month(prev_month_date.month(), prev_month_date.year()) as i8;
-        }
-
-        if months < 0 {
-            years -= 1;
-            months += 12;
-        }
+        let span = birth.until((Unit::Year, target)).unwrap();
 
         Self {
-            years: years as u8,
-            months: months as u8,
-            days: days as u8,
+            years: span.get_years() as u8,
+            months: span.get_months() as u8,
+            days: span.get_days() as u8,
         }
     }
 }
 
 impl From<Date> for Age {
     fn from(birth: Date) -> Self {
-        Self::between(birth, OffsetDateTime::now_utc().date())
+        Self::between(birth, Zoned::now().date())
     }
 }
 
@@ -89,12 +73,11 @@ impl std::fmt::Display for Age {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use time::macros::date;
 
     #[test]
     fn calc_age() {
-        let birth = date!(2020 - 01 - 01);
-        let target = date!(2024 - 05 - 05);
+        let birth = Date::new(2020, 1, 1).unwrap();
+        let target = Date::new(2024, 5, 5).unwrap();
         let age = Age::between(birth, target);
 
         assert_eq!(age.years(), 4);
@@ -104,8 +87,8 @@ mod tests {
 
     #[test]
     fn test_birthday_not_reached_this_month() {
-        let birth = date!(1990 - 05 - 15);
-        let target = date!(2024 - 05 - 10);
+        let birth = Date::new(1990, 5, 15).unwrap();
+        let target = Date::new(2024, 5, 10).unwrap();
         let age = Age::between(birth, target);
 
         assert_eq!(age.years(), 33);
@@ -115,8 +98,8 @@ mod tests {
 
     #[test]
     fn test_leap_year_february() {
-        let birth = date!(2024 - 02 - 29);
-        let target = date!(2025 - 02 - 28);
+        let birth = Date::new(2024, 2, 29).unwrap();
+        let target = Date::new(2025, 2, 28).unwrap();
         let age = Age::between(birth, target);
 
         assert_eq!(age.years(), 0);
@@ -126,8 +109,8 @@ mod tests {
 
     #[test]
     fn test_target_before_birth() {
-        let birth = date!(2024 - 01 - 01);
-        let target = date!(2023 - 01 - 01);
+        let birth = Date::new(2024, 1, 1).unwrap();
+        let target = Date::new(2023, 1, 1).unwrap();
         let age = Age::between(birth, target);
 
         assert_eq!(age.years(), 0);
@@ -137,7 +120,7 @@ mod tests {
 
     #[test]
     fn test_from_now() {
-        let birth = date!(2000 - 01 - 01);
+        let birth = Date::new(2000, 1, 1).unwrap();
         let age = Age::from(birth);
         assert!(age.years() >= 24);
     }

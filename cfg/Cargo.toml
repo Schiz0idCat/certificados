@@ -5,4 +5,4 @@ edition.workspace = true
 
 [dependencies]
 rut = { path = "../tools/rut" }
-time = { workspace = true, features = ["formatting"] }
+jiff = { workspace = true }
