@@ -46,6 +46,14 @@ impl Assistance {
             end_time: strtime::format(time_fmt, range.end())?,
         })
     }
+
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    pub fn today(&self) -> &str {
+        &self.today
+    }
 }
 
 impl PdfGenerator for Assistance {}

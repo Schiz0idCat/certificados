@@ -1,6 +1,6 @@
 use crate::errors::AssistanceGuiError;
+use crate::utils::FileExplorer;
 use crate::widgets::{Calendar, TimeRange as TimeWidget};
-use pdf::PdfGenerator;
 use rut::Rut;
 use templates::Assistance;
 use time_utils::TimeRange;
@@ -9,7 +9,7 @@ use eframe::egui;
 use jiff::Zoned;
 use jiff::civil::{Date, Time};
 
-use std::path::Path;
+use std::sync::mpsc::{Receiver, Sender, channel};
 
 pub struct AssistanceGui {
     name: Option<String>,
@@ -21,10 +21,14 @@ pub struct AssistanceGui {
     start_time: Time,
     end_time: Time,
     submitted: bool,
+    is_saving: bool,
+    tx: Sender<bool>,
+    rx: Receiver<bool>,
 }
 
 impl Default for AssistanceGui {
     fn default() -> Self {
+        let (tx, rx) = channel();
         let today = Zoned::now().date();
 
         Self {
@@ -37,6 +41,9 @@ impl Default for AssistanceGui {
             start_time: Zoned::now().time(),
             end_time: Zoned::now().time(),
             submitted: false,
+            is_saving: false,
+            tx,
+            rx,
         }
     }
 }
@@ -82,17 +89,35 @@ impl eframe::App for AssistanceGui {
 
                 ui.separator();
 
-                let button = ui.add_sized([120.0, 40.0], egui::Button::new("Generar PDF"));
-
-                if button.clicked() {
-                    self.submitted = true;
-
-                    if let Ok(data) = Assistance::try_from(&*self) {
-                        let path = Path::new("asistencia.pdf");
-
-                        let _ = data.save_as_pdf(path);
-                    }
+                if let Ok(finished) = self.rx.try_recv() {
+                    self.is_saving = !finished;
                 }
+
+                ui.add_enabled_ui(!self.is_saving, |ui| {
+                    let button = ui.add_sized([120.0, 40.0], egui::Button::new("Generar PDF"));
+
+                    if button.clicked() {
+                        self.submitted = true;
+
+                        match Assistance::try_from(&*self) {
+                            Ok(data) => {
+                                self.is_saving = true;
+                                let tx = self.tx.clone();
+
+                                std::thread::spawn(move || {
+                                    let name = format!(
+                                        "certificado_asistencia_{}_{}",
+                                        data.name().to_lowercase().replace(" ", "_"),
+                                        data.today()
+                                    );
+                                    let _ = FileExplorer::save(&name, &data);
+                                    let _ = tx.send(true);
+                                });
+                            }
+                            Err(_) => {}
+                        }
+                    }
+                });
             });
         });
     }

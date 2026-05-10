@@ -7,6 +7,7 @@ edition.workspace = true
 eframe = { workspace = true }
 jiff = { workspace = true }
 pdf = { path = "../pdf" }
+rfd = "0.17.2"
 rut = { path = "../tools/rut" }
 templates = { path = "../templates" }
 thiserror = { workspace = true }
