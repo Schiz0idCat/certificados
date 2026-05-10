@@ -6,5 +6,8 @@ edition.workspace = true
 [dependencies]
 eframe = { workspace = true }
 jiff = { workspace = true }
+pdf = { path = "../pdf" }
 rut = { path = "../tools/rut" }
 templates = { path = "../templates" }
+thiserror = { workspace = true }
+time_utils = { path = "../tools/time_utils" }

@@ -1598,8 +1598,11 @@ version = "0.1.0"
 dependencies = [
  "eframe",
  "jiff",
+ "pdf",
  "rut",
  "templates",
+ "thiserror 2.0.18",
+ "time_utils",
 ]
 
 [[package]]

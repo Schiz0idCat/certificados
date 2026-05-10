@@ -1,9 +1,15 @@
-use crate::widgets::{Calendar, TimeRange};
+use crate::errors::AssistanceGuiError;
+use crate::widgets::{Calendar, TimeRange as TimeWidget};
+use pdf::PdfGenerator;
 use rut::Rut;
+use templates::Assistance;
+use time_utils::TimeRange;
 
 use eframe::egui;
 use jiff::Zoned;
 use jiff::civil::{Date, Time};
+
+use std::path::Path;
 
 pub struct AssistanceGui {
     name: Option<String>,
@@ -80,9 +86,34 @@ impl eframe::App for AssistanceGui {
 
                 if button.clicked() {
                     self.submitted = true;
+
+                    if let Ok(data) = Assistance::try_from(&*self) {
+                        let path = Path::new("asistencia.pdf");
+
+                        let _ = data.save_as_pdf(path);
+                    }
                 }
             });
         });
+    }
+}
+
+impl TryFrom<&AssistanceGui> for Assistance {
+    type Error = AssistanceGuiError;
+
+    fn try_from(gui: &AssistanceGui) -> Result<Self, Self::Error> {
+        let range = TimeRange::try_new(gui.start_time, gui.end_time)?;
+        let name = gui.name.as_ref().ok_or(AssistanceGuiError::EmptyName)?;
+        let rut = gui.rut.clone().ok_or(AssistanceGuiError::EmptyName)?;
+
+        Ok(Assistance::try_new(
+            name,
+            gui.birth,
+            rut,
+            gui.today,
+            gui.appointment,
+            range,
+        )?)
     }
 }
 
@@ -121,7 +152,7 @@ impl AssistanceGui {
 
     fn time(ui: &mut egui::Ui, lbl: &str, id: &str, start: &mut Time, end: &mut Time) {
         ui.label(lbl);
-        TimeRange::show(ui, id, start, end);
+        TimeWidget::show(ui, id, start, end);
         ui.end_row();
     }
 
