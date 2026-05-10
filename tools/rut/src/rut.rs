@@ -1,7 +1,7 @@
 use crate::DisplayOpt;
 use crate::error::RutError;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Rut {
     num: u32,
     dv: char,
