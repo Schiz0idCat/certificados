@@ -8,7 +8,7 @@ impl Gui {
     pub fn run() -> eframe::Result {
         let options = eframe::NativeOptions {
             viewport: egui::ViewportBuilder::default()
-                .with_inner_size([600.0, 380.0])
+                .with_inner_size([600.0, 340.0])
                 .with_resizable(false),
             ..Default::default()
         };

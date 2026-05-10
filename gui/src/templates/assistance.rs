@@ -1,8 +1,8 @@
-use crate::widgets::Calendar;
+use crate::widgets::{Calendar, TimeRange};
 
 use eframe::egui;
 use jiff::Zoned;
-use jiff::civil::Date;
+use jiff::civil::{Date, Time};
 
 pub struct Assistance {
     name: String,
@@ -10,8 +10,8 @@ pub struct Assistance {
     rut: String,
     today: Date,
     appointment: Date,
-    start_time: String,
-    end_time: String,
+    start_time: Time,
+    end_time: Time,
 }
 
 impl Default for Assistance {
@@ -24,8 +24,8 @@ impl Default for Assistance {
             rut: String::new(),
             today: today,
             appointment: today,
-            start_time: String::new(),
-            end_time: String::new(),
+            start_time: Zoned::now().time(),
+            end_time: Zoned::now().time(),
         }
     }
 }
@@ -53,8 +53,13 @@ impl eframe::App for Assistance {
                                 Self::date(ui, "Fecha Informe:", "today", &mut self.today);
                                 Self::date(ui, "Fecha Cita:", "apmt", &mut self.appointment);
 
-                                Assistance::text(ui, "Hora Inicio:", &mut self.start_time);
-                                Assistance::text(ui, "Hora Fin:", &mut self.end_time);
+                                Self::time(
+                                    ui,
+                                    "Horario:",
+                                    "range_p",
+                                    &mut self.start_time,
+                                    &mut self.end_time,
+                                );
                             });
                     });
 
@@ -79,6 +84,12 @@ impl Assistance {
     fn date(ui: &mut egui::Ui, lbl: &str, id: &str, var: &mut Date) {
         ui.label(lbl);
         Calendar::show(ui, id, var);
+        ui.end_row();
+    }
+
+    fn time(ui: &mut egui::Ui, lbl: &str, id: &str, start: &mut Time, end: &mut Time) {
+        ui.label(lbl);
+        TimeRange::show(ui, id, start, end);
         ui.end_row();
     }
 }
