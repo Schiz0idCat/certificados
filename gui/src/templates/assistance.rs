@@ -5,36 +5,37 @@ use eframe::egui;
 use jiff::Zoned;
 use jiff::civil::{Date, Time};
 
-pub struct Assistance {
-    name: String,
+pub struct AssistanceGui {
+    name: Option<String>,
     birth: Date,
-    rut: Rut,
+    rut: Option<Rut>,
     rut_buf: String,
     today: Date,
     appointment: Date,
     start_time: Time,
     end_time: Time,
+    submitted: bool,
 }
 
-impl Default for Assistance {
+impl Default for AssistanceGui {
     fn default() -> Self {
         let today = Zoned::now().date();
-        let rut = Rut::try_new(11111111, '1').unwrap();
 
         Self {
-            name: String::new(),
+            name: None,
             birth: today,
             rut_buf: String::new(),
-            rut: rut,
+            rut: None,
             today: today,
             appointment: today,
             start_time: Zoned::now().time(),
             end_time: Zoned::now().time(),
+            submitted: false,
         }
     }
 }
 
-impl eframe::App for Assistance {
+impl eframe::App for AssistanceGui {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show_inside(ui, |ui| {
             ui.vertical_centered(|ui| {
@@ -50,8 +51,14 @@ impl eframe::App for Assistance {
                             .min_col_width(ui.available_width() / 5.0)
                             .striped(true)
                             .show(ui, |ui| {
-                                Self::text(ui, "Nombre:", &mut self.name);
-                                Self::rut(ui, "RUT:", &mut self.rut_buf, &mut self.rut);
+                                Self::text(ui, "Nombre:", &mut self.name, self.submitted);
+                                Self::rut(
+                                    ui,
+                                    "RUT:",
+                                    &mut self.rut_buf,
+                                    &mut self.rut,
+                                    self.submitted,
+                                );
 
                                 Self::date(ui, "Fecha de Nacimiento:", "birth", &mut self.birth);
                                 Self::date(ui, "Fecha Informe:", "today", &mut self.today);
@@ -70,18 +77,39 @@ impl eframe::App for Assistance {
                 ui.separator();
 
                 let button = ui.add_sized([120.0, 40.0], egui::Button::new("Generar PDF"));
+
                 if button.clicked() {
-                    // Acción
+                    self.submitted = true;
                 }
             });
         });
     }
 }
 
-impl Assistance {
-    fn text(ui: &mut egui::Ui, lbl: &str, var: &mut String) {
+impl AssistanceGui {
+    fn text(ui: &mut egui::Ui, lbl: &str, var: &mut Option<String>, submitted: bool) {
         ui.label(lbl);
-        ui.add(egui::TextEdit::singleline(var).desired_width(f32::INFINITY));
+        let id = ui.make_persistent_id(lbl);
+
+        let mut tmp_name = var.as_deref().unwrap_or("").to_string();
+
+        ui.scope(|ui| {
+            if Self::should_show_error(ui, id, submitted, tmp_name.is_empty()) {
+                Self::apply_error_style(ui);
+            }
+
+            let res =
+                ui.add(egui::TextEdit::singleline(&mut tmp_name).desired_width(f32::INFINITY));
+
+            if res.changed() {
+                *var = (!tmp_name.is_empty()).then_some(tmp_name);
+                ui.data_mut(|d| d.insert_temp(id, true));
+            }
+            if res.gained_focus() {
+                ui.data_mut(|d| d.insert_temp(id, true));
+            }
+        });
+
         ui.end_row();
     }
 
@@ -97,34 +125,54 @@ impl Assistance {
         ui.end_row();
     }
 
-    fn rut(ui: &mut egui::Ui, lbl: &str, buffer: &mut String, rut_val: &mut Rut) {
+    fn rut(
+        ui: &mut egui::Ui,
+        lbl: &str,
+        buffer: &mut String,
+        rut_val: &mut Option<Rut>,
+        submitted: bool,
+    ) {
         ui.label(lbl);
+        let id = ui.make_persistent_id(lbl);
 
         ui.scope(|ui| {
-            let is_valid = buffer.is_empty() || buffer.parse::<Rut>().is_ok();
+            let is_invalid = buffer.is_empty() || buffer.parse::<Rut>().is_err();
 
-            if !is_valid {
-                let visuals = &mut ui.style_mut().visuals.widgets;
-                visuals.inactive.bg_stroke = egui::Stroke::new(1.0, egui::Color32::RED);
-                visuals.hovered.bg_stroke = egui::Stroke::new(1.0, egui::Color32::RED);
-                visuals.active.bg_stroke = egui::Stroke::new(1.0, egui::Color32::RED);
+            if Self::should_show_error(ui, id, submitted, is_invalid) {
+                Self::apply_error_style(ui);
             }
 
             let res = ui.add(egui::TextEdit::singleline(buffer).desired_width(f32::INFINITY));
 
             if res.changed() {
-                if let Ok(valid_rut) = buffer.parse::<Rut>() {
-                    *rut_val = valid_rut;
-                }
+                *rut_val = buffer.parse::<Rut>().ok();
+                ui.data_mut(|d| d.insert_temp(id, true));
+            }
+
+            if res.gained_focus() {
+                ui.data_mut(|d| d.insert_temp(id, true));
             }
 
             if res.lost_focus() {
-                if let Ok(valid_rut) = buffer.parse::<Rut>() {
-                    *buffer = valid_rut.to_string();
+                if let Some(valid) = rut_val {
+                    *buffer = valid.to_string();
                 }
             }
         });
 
         ui.end_row();
+    }
+
+    fn should_show_error(ui: &egui::Ui, id: egui::Id, submitted: bool, is_invalid: bool) -> bool {
+        let interacted = ui.data(|d| d.get_temp::<bool>(id).unwrap_or(false));
+        is_invalid && (interacted || submitted)
+    }
+
+    fn apply_error_style(ui: &mut egui::Ui) {
+        let visuals = &mut ui.style_mut().visuals.widgets;
+        let stroke = egui::Stroke::new(1.0, egui::Color32::RED);
+        visuals.inactive.bg_stroke = stroke;
+        visuals.hovered.bg_stroke = stroke;
+        visuals.active.bg_stroke = stroke;
     }
 }

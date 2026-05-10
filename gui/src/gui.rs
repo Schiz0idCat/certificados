@@ -1,4 +1,4 @@
-use crate::templates::Assistance;
+use crate::templates::AssistanceGui;
 
 use eframe::egui;
 
@@ -39,7 +39,7 @@ impl Gui {
 
                 cc.egui_ctx.set_global_style(style);
 
-                Ok(Box::<Assistance>::default())
+                Ok(Box::<AssistanceGui>::default())
             }),
         )
     }

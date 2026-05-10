@@ -1599,6 +1599,7 @@ dependencies = [
  "eframe",
  "jiff",
  "rut",
+ "templates",
 ]
 
 [[package]]

@@ -1,3 +1,3 @@
 mod assistance;
 
-pub use assistance::Assistance;
+pub use assistance::AssistanceGui;

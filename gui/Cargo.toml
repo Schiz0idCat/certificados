@@ -7,3 +7,4 @@ edition.workspace = true
 eframe = { workspace = true }
 jiff = { workspace = true }
 rut = { path = "../tools/rut" }
+templates = { path = "../templates" }
