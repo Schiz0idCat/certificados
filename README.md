@@ -5,4 +5,4 @@ Las plantillas utilizadas en producción son privadas y no se distribuyen públi
 Sin estas, el código no compilará.
 
 # Prueba de Concepto
-![demo](./extras/demo.png)
+![demo](./media/demo.png)
