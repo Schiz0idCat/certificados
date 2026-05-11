@@ -1,0 +1,6 @@
+[package]
+name = "string_extras"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]

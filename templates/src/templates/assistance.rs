@@ -7,6 +7,7 @@ use jiff::civil::Date;
 use jiff::fmt::strtime;
 use pdf::PdfGenerator;
 use rut::Rut;
+use string_extras::StringExtras;
 use time_utils::TimeRange;
 
 #[derive(Template)]
@@ -44,7 +45,7 @@ impl Assistance {
         let rut_fmt = Cfg::global().rut_fmt();
 
         Ok(Self {
-            name: to_title_case(name),
+            name: name.to_title_case(),
             birth: strtime::format(date_fmt, birth)?,
             age: Age::between(birth, today).to_string(),
             rut: rut.format(rut_fmt),
@@ -62,22 +63,6 @@ impl Assistance {
     pub fn today(&self) -> &str {
         &self.today
     }
-}
-
-fn to_title_case(str: impl ToString) -> String {
-    str.to_string()
-        .to_lowercase()
-        .split_whitespace()
-        .map(|word| {
-            let mut chars = word.chars();
-
-            match chars.next() {
-                None => String::new(),
-                Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
-            }
-        })
-        .collect::<Vec<String>>()
-        .join(" ")
 }
 
 impl PdfGenerator for Assistance {}
