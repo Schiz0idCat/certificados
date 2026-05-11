@@ -2,6 +2,7 @@ use crate::errors::AssistanceGuiError;
 use crate::utils::FileExplorer;
 use crate::widgets::{Calendar, TimeRange as TimeWidget};
 use rut::Rut;
+use string_extras::StringExtras;
 use templates::Assistance;
 use time_utils::TimeRange;
 
@@ -166,6 +167,13 @@ impl AssistanceGui {
                 *var = (!tmp_name.is_empty()).then_some(tmp_name);
                 ui.data_mut(|d| d.insert_temp(id, true));
             }
+
+            if res.lost_focus() {
+                if let Some(name) = var {
+                    *name = name.to_title_case();
+                }
+            }
+
             if res.gained_focus() {
                 ui.data_mut(|d| d.insert_temp(id, true));
             }

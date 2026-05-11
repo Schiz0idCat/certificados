@@ -1603,6 +1603,7 @@ dependencies = [
  "pdf",
  "rfd",
  "rut",
+ "string_extras",
  "templates",
  "thiserror 2.0.18",
  "time_utils",

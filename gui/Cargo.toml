@@ -9,6 +9,7 @@ jiff = { workspace = true }
 pdf = { path = "../pdf" }
 rfd = "0.17.2"
 rut = { path = "../tools/rut" }
+string_extras = { path = "../tools/string_extras" }
 templates = { path = "../templates" }
 thiserror = { workspace = true }
 time_utils = { path = "../tools/time_utils" }
