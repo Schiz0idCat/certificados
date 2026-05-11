@@ -99,22 +99,19 @@ impl eframe::App for AssistanceGui {
                     if button.clicked() {
                         self.submitted = true;
 
-                        match Assistance::try_from(&*self) {
-                            Ok(data) => {
-                                self.is_saving = true;
-                                let tx = self.tx.clone();
+                        if let Ok(data) = Assistance::try_from(&*self) {
+                            self.is_saving = true;
+                            let tx = self.tx.clone();
 
-                                std::thread::spawn(move || {
-                                    let name = format!(
-                                        "certificado_asistencia_{}_{}",
-                                        data.name().split(' ').next().unwrap_or("").to_lowercase(),
-                                        data.today()
-                                    );
-                                    let _ = FileExplorer::save(&name, &data);
-                                    let _ = tx.send(true);
-                                });
-                            }
-                            Err(_) => {}
+                            std::thread::spawn(move || {
+                                let name = format!(
+                                    "certificado_asistencia_{}_{}",
+                                    data.name().split(' ').next().unwrap_or("").to_lowercase(),
+                                    data.today()
+                                );
+                                let _ = FileExplorer::save(&name, &data);
+                                let _ = tx.send(true);
+                            });
                         }
                     }
                 });
