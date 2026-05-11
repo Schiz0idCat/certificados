@@ -107,7 +107,7 @@ impl eframe::App for AssistanceGui {
                                 std::thread::spawn(move || {
                                     let name = format!(
                                         "certificado_asistencia_{}_{}",
-                                        data.name().to_lowercase().replace(" ", "_"),
+                                        data.name().split(' ').next().unwrap_or("").to_lowercase(),
                                         data.today()
                                     );
                                     let _ = FileExplorer::save(&name, &data);
