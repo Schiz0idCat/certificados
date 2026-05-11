@@ -31,6 +31,14 @@ impl Assistance {
         appointment: Date,
         range: TimeRange,
     ) -> Result<Self, AssistanceError> {
+        if birth >= appointment {
+            return Err(AssistanceError::BirthAfterAppointment);
+        }
+
+        if birth >= today {
+            return Err(AssistanceError::BirthAfterToday);
+        }
+
         let date_fmt = Cfg::global().date_fmt();
         let time_fmt = Cfg::global().time_fmt();
         let rut_fmt = Cfg::global().rut_fmt();

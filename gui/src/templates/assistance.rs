@@ -77,6 +77,14 @@ impl eframe::App for AssistanceGui {
                                 Self::date(ui, "Fecha Informe:", "today", &mut self.today);
                                 Self::date(ui, "Fecha Cita:", "apmt", &mut self.appointment);
 
+                                if self.birth >= self.appointment {
+                                    self.birth = self.appointment.yesterday().unwrap();
+                                }
+
+                                if self.birth >= self.today {
+                                    self.birth = self.today.yesterday().unwrap();
+                                }
+
                                 Self::time(
                                     ui,
                                     "Horario:",

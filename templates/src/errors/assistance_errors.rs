@@ -7,4 +7,10 @@ pub enum AssistanceError {
 
     #[error("time error: {0}")]
     Format(#[from] jiff::Error),
+
+    #[error("Birth after appointment.")]
+    BirthAfterAppointment,
+
+    #[error("Birth after today.")]
+    BirthAfterToday,
 }
