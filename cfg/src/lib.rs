@@ -30,7 +30,7 @@ impl Cfg {
 impl Default for Cfg {
     fn default() -> Self {
         Self {
-            date_fmt: "%d/%m/%Y",
+            date_fmt: "%d-%m-%Y",
             time_fmt: "%H:%M",
             rut_fmt: DisplayOpt::default(),
         }
