@@ -118,7 +118,7 @@ impl eframe::App for AssistanceGui {
                                     data.name().split(' ').next().unwrap_or("").to_lowercase(),
                                     data.today()
                                 );
-                                let _ = FileExplorer::save(&name, &data);
+                                let _ = data.save(&name);
                                 let _ = tx.send(true);
                             });
                         }
@@ -147,6 +147,8 @@ impl TryFrom<&AssistanceGui> for Assistance {
         )?)
     }
 }
+
+impl FileExplorer for Assistance {}
 
 impl AssistanceGui {
     fn text(ui: &mut egui::Ui, lbl: &str, var: &mut Option<String>, submitted: bool) {

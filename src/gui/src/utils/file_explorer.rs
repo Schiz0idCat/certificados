@@ -2,10 +2,8 @@ use crate::errors::GuiError;
 use pdf::PdfGenerator;
 use rfd::FileDialog;
 
-pub struct FileExplorer;
-
-impl FileExplorer {
-    pub fn save<T: PdfGenerator>(name: &str, template: &T) -> Result<(), GuiError> {
+pub trait FileExplorer: PdfGenerator {
+    fn save(&self, name: &str) -> Result<(), GuiError> {
         let name = format!("{}.pdf", name);
 
         let file_path = FileDialog::new()
@@ -14,7 +12,7 @@ impl FileExplorer {
             .save_file();
 
         if let Some(path) = file_path {
-            template.save_as_pdf(&path)?;
+            self.save_as_pdf(&path)?;
         }
 
         Ok(())
