@@ -7,8 +7,8 @@ use templates::Assistance;
 use time_utils::TimeRange;
 
 use eframe::egui;
-use jiff::Zoned;
 use jiff::civil::{Date, Time};
+use jiff::{ToSpan, Zoned};
 
 use std::sync::mpsc::{Receiver, Sender, channel};
 
@@ -34,7 +34,7 @@ impl Default for AssistanceGui {
 
         Self {
             name: None,
-            birth: today,
+            birth: today.saturating_sub(5.years()),
             rut_buf: String::new(),
             rut: None,
             today: today,
