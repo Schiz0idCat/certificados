@@ -31,6 +31,8 @@ impl Default for AssistanceGui {
     fn default() -> Self {
         let (tx, rx) = channel();
         let today = Zoned::now().date();
+        let now = Zoned::now().time();
+        let now = now.saturating_sub(now.minute().minutes());
 
         Self {
             name: None,
@@ -39,8 +41,8 @@ impl Default for AssistanceGui {
             rut: None,
             today: today,
             appointment: today,
-            start_time: Zoned::now().time(),
-            end_time: Zoned::now().time(),
+            start_time: now,
+            end_time: now.saturating_add(1.hours()),
             submitted: false,
             is_saving: false,
             tx,
